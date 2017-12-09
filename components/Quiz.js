@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, Vibration, Animated } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Vibration, Animated } from 'react-native'
 import TextButton from './TextButton'
 
 import { black, gray, white, lightGreen, orange, blue } from '../utils/colors'
@@ -8,6 +8,7 @@ const initialState = {
   cards: [],
   currentIndex: 0,
   correct: 0,
+  showAnswer: false,
   bounceValue: new Animated.Value(1)
 }
 
@@ -26,6 +27,7 @@ export default class Quiz extends Component {
                 : initialState
 
     this.handleSelect = this.handleSelect.bind(this)
+    this.toggleShowAnswer = this.toggleShowAnswer.bind(this)
   }
 
   handleSelect = (value) => {
@@ -41,6 +43,7 @@ export default class Quiz extends Component {
       Vibration.vibrate(1000)
 
     this.setState({
+      showAnswer: false,
       currentIndex: currentIndex + 1
     })
 
@@ -50,8 +53,14 @@ export default class Quiz extends Component {
     ]).start()
   }
 
+  toggleShowAnswer = () => {
+    this.setState(prev => ({
+      showAnswer: !prev.showAnswer
+    }))
+  }
+
   render () {
-    const { correct, cards, currentIndex, bounceValue } = this.state
+    const { correct, cards, currentIndex, showAnswer, bounceValue } = this.state
     const total = cards.length
 
     if (!total)
@@ -81,6 +90,11 @@ export default class Quiz extends Component {
             <Text style={styles.question}>{ card.question }</Text>
             <Text style={styles.number}>
               { currentIndex + 1 } / { cards.length }
+            </Text>
+            <Text style={styles.answer} onPress={this.toggleShowAnswer}>
+              {
+                showAnswer ? card.answer ? 'CORRECT' : 'INCORRECT' : 'SHOW ANSWER'
+              }
             </Text>
         </Animated.View>
         <TextButton
@@ -119,6 +133,11 @@ const styles = StyleSheet.create({
   number: {
     color: white,
     fontSize: 20
+  },
+  answer: {
+    marginTop: 25,
+    fontSize: 14,
+    color: gray,
   },
   plainContainer: {
     flex: 1,
