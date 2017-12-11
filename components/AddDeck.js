@@ -40,9 +40,11 @@ class AddDeck extends Component {
   toDeckListView () {
     Keyboard.dismiss()
 
-    this.props.navigation.dispatch(NavigationActions.back({
-      key: null
-    }))
+    // this.props.navigation.dispatch(NavigationActions.back({
+    //   key: null
+    // }))
+    const key = this.state.name
+    this.props.navigation.navigate('DeckDetail', { deckId: key })
   }
 
   render () {

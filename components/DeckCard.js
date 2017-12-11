@@ -8,7 +8,7 @@ export default function DeckCard ({ deck, onPress, style = {} }) {
     <TouchableOpacity
       onPress={onPress}
       style={[styles.defaultTouchable, style.card]}>
-      <Text style={[styles.defaultText, style.text]}>{ deck.name }</Text>
+      <Text style={[styles.defaultText, style.text]}>{ deck.name } : { deck.cards.length }</Text>
     </TouchableOpacity>
   )
 }

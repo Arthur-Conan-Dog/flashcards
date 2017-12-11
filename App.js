@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 
 import { black } from './utils/colors'
-
+import { setLocalNotification } from './utils/helpers'
 import { getDecks, getDeck, clearLocalStorage, checkLocalStorage } from './utils/api'
 
 import { createStore } from 'redux'
@@ -12,6 +12,10 @@ import reducer from './reducers'
 import RootNavigator from './components/RootNavigator'
 
 export default class App extends React.Component {
+
+  componentDidMount () {
+    setLocalNotification()
+  }
 
   render() {
     return (

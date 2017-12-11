@@ -4,6 +4,8 @@ import TextButton from './TextButton'
 
 import { black, gray, white, lightGreen, orange, blue } from '../utils/colors'
 
+import { clearLocalNotification, setLocalNotification } from '../utils/helpers'
+
 const initialState = {
   cards: [],
   currentIndex: 0,
@@ -28,6 +30,8 @@ export default class Quiz extends Component {
 
     this.handleSelect = this.handleSelect.bind(this)
     this.toggleShowAnswer = this.toggleShowAnswer.bind(this)
+    this.handleRestart = this.handleRestart.bind(this)
+    this.handleGoBack = this.handleGoBack.bind(this)
   }
 
   handleSelect = (value) => {
@@ -59,6 +63,18 @@ export default class Quiz extends Component {
     }))
   }
 
+  handleRestart = () => {
+    const { cards } = this.props.navigation.state.params
+    this.setState({
+      ...initialState,
+      cards
+    })
+  }
+
+  handleGoBack = () => {
+    this.props.navigation.goBack()
+  }
+
   render () {
     const { correct, cards, currentIndex, showAnswer, bounceValue } = this.state
     const total = cards.length
@@ -70,12 +86,28 @@ export default class Quiz extends Component {
         </View>
       )
 
-    if (currentIndex === total)
+    if (currentIndex === total) {
+      // Clear local notification
+      clearLocalNotification()
+        .then(setLocalNotification)
+        .catch(err => console.log(err))
+
       return (
         <View style={styles.plainContainer}>
-          <Text style={{ fontSize: 32, textAlign: 'center', color: blue }}>YOUR SCORE: { correct } / { total }</Text>
+          <Text style={{ fontSize: 32, textAlign: 'center', color: blue, marginBottom: 32 }}>YOUR SCORE: { correct } / { total }</Text>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={this.handleRestart}>
+              <Text style={{ fontSize: 24, color: blue }}>Restart Quiz</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={this.handleGoBack}>
+              <Text style={{ fontSize: 24, color: blue }}>Back to Deck</Text>
+          </TouchableOpacity>
         </View>
       )
+    }
 
     const card = cards[currentIndex]
 
@@ -144,6 +176,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: black,
+  },
+  button: {
+    marginTop: 6,
+    padding: 6,
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: white,
+    marginLeft: 64,
+    marginRight: 64,
   }
 })
 
